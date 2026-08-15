@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ATM Pin & Balance Manager</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="atm-machine">
+      <div class="screen" id="screen-display">Enter PIN</div>
+      <input type="password" id="pin-input" placeholder="PIN" readonly />
+      <div class="keypad">
+        <button>1</button><button>2</button><button>3</button> <button>4</button
+        ><button>5</button><button>6</button> <button>7</button
+        ><button>8</button><button>9</button> <button>C</button
+        ><button>0</button><button>OK</button>
+      </div>
+      <div class="actions">
+        <button id="btn-deposit">Deposit</button>
+        <button id="btn-withdraw">Withdraw</button>
+        <button id="btn-balance">Check Balance</button>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
