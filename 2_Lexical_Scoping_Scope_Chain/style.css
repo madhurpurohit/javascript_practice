@@ -1,0 +1,6 @@
+body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1e1e1e; color: #ccc; }
+.sidebar { width: 250px; height: 100vh; background: #252526; padding: 10px; box-sizing: border-box; }
+.folder { margin-left: 15px; cursor: pointer; user-select: none; }
+.folder-name { display: block; padding: 5px; }
+.folder-name:hover { background: #37373d; }
+.hidden { display: none; }
