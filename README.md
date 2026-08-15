@@ -12,26 +12,26 @@ The architecture of each lab adheres strictly to modern vanilla JavaScript, ensu
 
 By navigating and resolving the challenges within this repository, a developer demonstrates mastery over:
 
-*   **Engine Mechanics:** Memory Creation/Execution phases, Hoisting, and Lexical Scoping.
-*   **State Management & Privacy:** Closures, Data Hiding, and the Module Pattern via IIFEs.
-*   **Memory Management:** Garbage Collection algorithms and identifying/mitigating Memory Leaks using `WeakMap` and `WeakSet`.
-*   **Context & Binding:** Deep understanding of the `this` keyword, `.call()`, `.apply()`, and `.bind()`.
-*   **Object-Oriented & Prototype Chains:** Prototypal inheritance, ES6 Classes, Constructors, and `extends`.
-*   **Metaprogramming:** Utilizing `Proxy` and `Reflect` APIs for reactive data binding and validation.
-*   **Asynchronous Architecture:** Generators, Iterators, Promises (including `Promise.all` vs `Promise.allSettled`), and Promisification of legacy APIs.
-*   **The Event Loop:** Precise orchestration of the Call Stack, Microtask Queue (Promises), and Macrotask Queue (`setTimeout`, `setInterval`).
-*   **Functional Programming:** Currying, Function Composition, and Memoization techniques for performance optimization.
-*   **Design Patterns:** Implementation of Singleton, Factory, and custom EventEmitter patterns.
-*   **Performance & Rendering:** Debouncing, Throttling, Web Workers for off-main-thread processing, Dynamic Imports for code-splitting, and optimizing the Critical Rendering Path (avoiding Layout Thrashing).
+- **Engine Mechanics:** Memory Creation/Execution phases, Hoisting, and Lexical Scoping.
+- **State Management & Privacy:** Closures, Data Hiding, and the Module Pattern via IIFEs.
+- **Memory Management:** Garbage Collection algorithms and identifying/mitigating Memory Leaks using `WeakMap` and `WeakSet`.
+- **Context & Binding:** Deep understanding of the `this` keyword, `.call()`, `.apply()`, and `.bind()`.
+- **Object-Oriented & Prototype Chains:** Prototypal inheritance, ES6 Classes, Constructors, and `extends`.
+- **Metaprogramming:** Utilizing `Proxy` and `Reflect` APIs for reactive data binding and validation.
+- **Asynchronous Architecture:** Generators, Iterators, Promises (including `Promise.all` vs `Promise.allSettled`), and Promisification of legacy APIs.
+- **The Event Loop:** Precise orchestration of the Call Stack, Microtask Queue (Promises), and Macrotask Queue (`setTimeout`, `setInterval`).
+- **Functional Programming:** Currying, Function Composition, and Memoization techniques for performance optimization.
+- **Design Patterns:** Implementation of Singleton, Factory, and custom EventEmitter patterns.
+- **Performance & Rendering:** Debouncing, Throttling, Web Workers for off-main-thread processing, Dynamic Imports for code-splitting, and optimizing the Critical Rendering Path (avoiding Layout Thrashing).
 
 ## 📂 Architecture & Navigation
 
 Each of the 24 topics is encapsulated within its own directory. The standard structure for each module is:
 
-*   `index.html`: The structural foundation and DOM nodes required for the module's execution.
-*   `style.css`: Bespoke vanilla CSS ensuring a clean, modern, and distraction-free user interface.
-*   `script.js`: The execution file containing architectural outlines and strict `// TODO:` directives.
-*   `Readme_Guide.md`: An expert-level technical brief containing definitions, interview-style explanations, real-world applications, step-by-step methodologies (without code spoilers), and the final reference implementation.
+- `index.html`: The structural foundation and DOM nodes required for the module's execution.
+- `style.css`: Bespoke vanilla CSS ensuring a clean, modern, and distraction-free user interface.
+- `script.js`: The execution file containing architectural outlines.
+- `Readme_Guide.md`: An expert-level technical brief containing definitions, interview-style explanations, real-world applications, step-by-step methodologies (without code spoilers).
 
 ## 🛠️ How to Use This Repository
 
@@ -40,8 +40,7 @@ Each of the 24 topics is encapsulated within its own directory. The standard str
 3.  Read the **Step-By-Step Process** section to conceptualize the solution without looking at the reference code.
 4.  Open `index.html` in your browser.
 5.  Implement the solution within `script.js` following the provided comments.
-6.  Compare your implementation against the **Code Part** section in the `Readme_Guide.md` for architectural validation.
 
 ---
 
-*This repository serves as a testament to deep, unabstracted JavaScript mastery, optimized for high-performance, enterprise-grade web applications.*
+_This repository serves as a testament to deep, unabstracted JavaScript mastery, optimized for high-performance, enterprise-grade web applications._
