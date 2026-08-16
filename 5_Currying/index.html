@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics Tracker Configurator | Currying & Partial Application</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo-section">
+      <div class="js-badge">JS</div>
+      <div class="title-group">
+        <h1>Analytics Tracker Configurator</h1>
+        <span class="sub-title">Currying Pipeline & Partial Application (<code>trackEvent(env)(type)(payload)</code>)</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="shortcut-tip">
+        <span class="badge badge-emerald">Partial Application</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div class="tracker-card">
+      <div class="panel-header">
+        <div class="window-dots">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+        </div>
+        <div class="tab active">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          curriedLogger.js
+        </div>
+      </div>
+
+      <div class="panel-body">
+        <div class="tracker-container">
+          <div class="event-triggers">
+            <div class="trigger-header">
+              <h2>Dispatch Analytics Events</h2>
+              <span class="subtle-note">Trigger pre-configured curried telemetry handlers</span>
+            </div>
+            <div class="buttons event-actions">
+              <button id="btn-click" class="btn btn-secondary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 15l5 5-5-5z"></path><circle cx="9" cy="9" r="7"></circle></svg>
+                Track Click
+              </button>
+              <button id="btn-purchase" class="btn btn-primary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                Track Purchase
+              </button>
+              <button id="btn-login" class="btn btn-cyan">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                Track Login
+              </button>
+            </div>
+          </div>
+
+          <div class="log-section">
+            <div class="log-header">
+              <div class="log-title">
+                <span class="badge badge-purple">Stream Output</span>
+                <span>Real-Time Curried Payload Log</span>
+              </div>
+              <span class="subtle-tag">JSON Telemetry</span>
+            </div>
+            <div id="log" class="terminal-log">
+              <div class="empty-state">No events dispatched yet. Click any button above to trigger.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
