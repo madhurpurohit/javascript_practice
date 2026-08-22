@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Data Loader | Promise.all vs Promise.allSettled</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo-section">
+      <div class="js-badge">JS</div>
+      <div class="title-group">
+        <h1>Dashboard Data Loader</h1>
+        <span class="sub-title">Concurrency Engine: <code>Sequential</code> vs <code>Promise.all()</code> vs <code>Promise.allSettled()</code></span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="shortcut-tip">
+        <span class="badge badge-purple">Async Concurrency</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div class="loader-dashboard">
+      <div class="panel-header">
+        <div class="window-dots">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+        </div>
+        <div class="tab active">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          promiseConcurrency.js
+        </div>
+      </div>
+
+      <div class="panel-body dashboard">
+        <div class="controls-bar">
+          <button id="btn-load-seq" class="btn btn-secondary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            Load Sequential
+          </button>
+          <button id="btn-load-all" class="btn btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+            Load Promise.all
+          </button>
+          <button id="btn-load-settled" class="btn btn-cyan">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            Load Promise.allSettled
+          </button>
+        </div>
+
+        <div class="cards-container">
+          <div class="card skeleton" id="card-stats">
+            <div class="card-icon">📊</div>
+            <div class="card-text">User Stats Loading...</div>
+          </div>
+          <div class="card skeleton" id="card-matches">
+            <div class="card-icon">⚔️</div>
+            <div class="card-text">Recent Matches Loading...</div>
+          </div>
+          <div class="card skeleton" id="card-notifs">
+            <div class="card-icon">🔔</div>
+            <div class="card-text">Notifications Loading...</div>
+          </div>
+        </div>
+
+        <div class="log-section">
+          <div class="log-header">
+            <span>Execution Duration Telemetry</span>
+            <span class="badge badge-emerald">Benchmark</span>
+          </div>
+          <div id="time-log" class="time-log-box">
+            <div class="empty-state">Click any concurrency mode above to benchmark API loading speeds.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
