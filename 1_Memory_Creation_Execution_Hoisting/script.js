@@ -9,6 +9,14 @@ let isSimulating = false;
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// Helper to escape HTML special characters
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 async function simulateMemoryPhase() {
   if (isSimulating) return;
   isSimulating = true;
@@ -28,46 +36,141 @@ async function simulateMemoryPhase() {
   const codeLines = code.value.split("\n");
   let memoryOutput = [];
   let executionOutput = [];
+  let varTypes = {}; // To remember whether a variable was var, let, or const
 
-  // Parse lines for Memory Creation Phase
+  // Parse lines for Memory Creation Phase (Hoisting)
   codeLines.forEach((line) => {
-    line = line.trim();
-    if (!line) return;
+    let cleanLine = line.trim();
+    // Remove inline or line comments
+    if (cleanLine.includes("//")) cleanLine = cleanLine.split("//")[0].trim();
+    if (!cleanLine || cleanLine.startsWith("/*") || cleanLine.startsWith("*")) return;
 
-    if (line.startsWith("var")) {
-      const parts = line.split(" ");
-      const varName = parts[1] ? parts[1].replace(";", "").split("=")[0].trim() : "var";
-      memoryOutput.push({ kind: "var", name: varName, status: '<span class="status-tag tag-undefined">undefined</span>' });
-    } else if (line.startsWith("let") || line.startsWith("const")) {
-      const kind = line.startsWith("let") ? "let" : "const";
-      const parts = line.split(" ");
-      const varName = parts[1] ? parts[1].replace(";", "").split("=")[0].trim() : kind;
-      memoryOutput.push({ kind: kind, name: varName, status: '<span class="status-tag tag-tdz">uninitialized (TDZ)</span>' });
-    } else if (line.startsWith("function")) {
-      const parts = line.split(" ");
-      const functionName = parts[1] ? parts[1].split("(")[0].trim() : "fn";
-      memoryOutput.push({ kind: "fn", name: functionName, status: '<span class="status-tag tag-fn">ƒ() { ... }</span>' });
+    if (cleanLine.startsWith("var ") || cleanLine.startsWith("var\t") || /^var(\s+|=)/.test(cleanLine)) {
+      const afterKeyword = cleanLine.replace(/^var\s*/, "");
+      const varName = afterKeyword.split("=")[0].replace(/;.*$/, "").trim();
+      if (varName && !memoryOutput.some((item) => item.name === varName)) {
+        varTypes[varName] = "var";
+        memoryOutput.push({
+          kind: "var",
+          name: varName,
+          status: '<span class="status-tag tag-undefined">undefined</span>',
+        });
+      }
+    } else if (
+      cleanLine.startsWith("let ") ||
+      cleanLine.startsWith("let\t") ||
+      /^let(\s+|=)/.test(cleanLine) ||
+      cleanLine.startsWith("const ") ||
+      cleanLine.startsWith("const\t") ||
+      /^const(\s+|=)/.test(cleanLine)
+    ) {
+      const isLet = cleanLine.startsWith("let");
+      const kind = isLet ? "let" : "const";
+      const afterKeyword = cleanLine.replace(/^(let|const)\s*/, "");
+      const varName = afterKeyword.split("=")[0].replace(/;.*$/, "").trim();
+      if (varName && !memoryOutput.some((item) => item.name === varName)) {
+        varTypes[varName] = kind;
+        memoryOutput.push({
+          kind: kind,
+          name: varName,
+          status: '<span class="status-tag tag-tdz">uninitialized (TDZ)</span>',
+        });
+      }
+    } else if (
+      cleanLine.startsWith("function ") ||
+      cleanLine.startsWith("function\t") ||
+      /^function(\s+|\()/.test(cleanLine)
+    ) {
+      const afterKeyword = cleanLine.replace(/^function\s*/, "");
+      const functionName = afterKeyword.split("(")[0].trim() || "fn";
+      if (functionName && !memoryOutput.some((item) => item.name === functionName)) {
+        varTypes[functionName] = "fn";
+        memoryOutput.push({
+          kind: "fn",
+          name: functionName,
+          status: '<span class="status-tag tag-fn">ƒ() { ... }</span>',
+        });
+      }
     }
   });
 
   // Parse lines for Execution Phase
   codeLines.forEach((line) => {
-    line = line.trim();
-    if (!line) return;
+    let cleanLine = line.trim();
+    // Remove inline or line comments
+    if (cleanLine.includes("//")) cleanLine = cleanLine.split("//")[0].trim();
+    if (!cleanLine || cleanLine.startsWith("/*") || cleanLine.startsWith("*")) return;
 
-    if (line.startsWith("var") || line.startsWith("let") || line.startsWith("const")) {
-      const kind = line.startsWith("var") ? "var" : line.startsWith("let") ? "let" : "const";
-      const parts = line.split(" ");
-      const varName = parts[1] ? parts[1].replace(";", "").split("=")[0].trim() : "var";
-      let val = "undefined";
-      if (line.includes("=")) {
-        val = line.split("=")[1].replace(";", "").trim();
+    // 1. Declarations (var, let, const)
+    if (/^(var|let|const)(\s+|=)/.test(cleanLine)) {
+      const isVar = cleanLine.startsWith("var");
+      const isLet = cleanLine.startsWith("let");
+      const kind = isVar ? "var" : isLet ? "let" : "const";
+      const afterKeyword = cleanLine.replace(/^(var|let|const)\s*/, "");
+      const varName = afterKeyword.split("=")[0].replace(/;.*$/, "").trim();
+
+      if (cleanLine.includes("=")) {
+        const eqIndex = cleanLine.indexOf("=");
+        const rawVal = cleanLine.slice(eqIndex + 1).replace(/;+$/, "").trim();
+        let displayVal = escapeHtml(rawVal);
+        let tagClass = "tag-value";
+        if (rawVal.startsWith("function") || rawVal.includes("=>")) {
+          displayVal = "ƒ() { ... }";
+          tagClass = "tag-fn";
+        }
+        executionOutput.push({
+          kind: kind,
+          name: varName,
+          status: `<span class="status-tag ${tagClass}">${displayVal}</span>`,
+        });
+      } else {
+        // Variable declared without assignment (e.g. let name; or var a;)
+        executionOutput.push({
+          kind: kind,
+          name: varName,
+          status: '<span class="status-tag tag-undefined">undefined</span>',
+        });
       }
-      executionOutput.push({ kind: kind, name: varName, status: `<span class="status-tag tag-value">${val}</span>` });
-    } else if (line.startsWith("function")) {
-      const parts = line.split(" ");
-      const functionName = parts[1] ? parts[1].split("(")[0].trim() : "fn";
-      executionOutput.push({ kind: "fn", name: functionName, status: '<span class="status-tag tag-fn">ƒ() { ... }</span>' });
+    }
+    // 2. Function declaration
+    else if (/^function(\s+|\()/.test(cleanLine)) {
+      const afterKeyword = cleanLine.replace(/^function\s*/, "");
+      const functionName = afterKeyword.split("(")[0].trim() || "fn";
+      executionOutput.push({
+        kind: "fn",
+        name: functionName,
+        status: '<span class="status-tag tag-fn">ƒ() { ... }</span>',
+      });
+    }
+    // 3. Direct assignment or late initialization (e.g. name = "Madhur"; or name="Madhur"; or a = 50;)
+    else if (
+      cleanLine.includes("=") &&
+      !cleanLine.includes("==") &&
+      !cleanLine.includes("===") &&
+      !cleanLine.includes("!=") &&
+      !cleanLine.includes("<=") &&
+      !cleanLine.includes(">=")
+    ) {
+      const eqIndex = cleanLine.indexOf("=");
+      const leftPart = cleanLine.slice(0, eqIndex).replace(/[+\-*/]/g, "").trim();
+      const rawVal = cleanLine.slice(eqIndex + 1).replace(/;+$/, "").trim();
+
+      // Check if leftPart is a valid variable identifier
+      if (/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(leftPart)) {
+        const varName = leftPart;
+        const kind = varTypes[varName] || "let";
+        let displayVal = escapeHtml(rawVal);
+        let tagClass = "tag-value";
+        if (rawVal.startsWith("function") || rawVal.includes("=>")) {
+          displayVal = "ƒ() { ... }";
+          tagClass = "tag-fn";
+        }
+        executionOutput.push({
+          kind: kind,
+          name: varName,
+          status: `<span class="status-tag ${tagClass}">${displayVal}</span>`,
+        });
+      }
     }
   });
 
@@ -81,6 +184,7 @@ async function simulateMemoryPhase() {
       const item = memoryOutput[i];
       const rowElem = document.createElement("div");
       rowElem.className = "output-row active-step";
+      rowElem.setAttribute("data-var", item.name);
       rowElem.innerHTML = `
         <div class="var-info">
           <span class="kind-badge kind-${item.kind}">${item.kind}</span>
@@ -110,18 +214,37 @@ async function simulateMemoryPhase() {
   } else {
     for (let i = 0; i < executionOutput.length; i++) {
       const item = executionOutput[i];
-      const rowElem = document.createElement("div");
-      rowElem.className = "output-row active-step";
-      rowElem.innerHTML = `
-        <div class="var-info">
-          <span class="kind-badge kind-${item.kind}">${item.kind}</span>
-          <span class="var-name">${item.name}</span>
-        </div>
-        ${item.status}
-      `;
-      executionPhaseOutput.appendChild(rowElem);
-      await delay(600);
-      rowElem.classList.remove("active-step");
+
+      // Check if this variable row already exists in execution phase output
+      let existingRow = executionPhaseOutput.querySelector(`[data-var="${item.name}"]`);
+
+      if (existingRow) {
+        // Variable updated / initialized later (e.g. name = "Madhur";)
+        existingRow.classList.add("active-step");
+        const statusElem = existingRow.querySelector(".status-tag");
+        if (statusElem) {
+          statusElem.outerHTML = item.status;
+        } else {
+          existingRow.insertAdjacentHTML("beforeend", item.status);
+        }
+        await delay(600);
+        existingRow.classList.remove("active-step");
+      } else {
+        // First time entering execution phase
+        const rowElem = document.createElement("div");
+        rowElem.className = "output-row active-step";
+        rowElem.setAttribute("data-var", item.name);
+        rowElem.innerHTML = `
+          <div class="var-info">
+            <span class="kind-badge kind-${item.kind}">${item.kind}</span>
+            <span class="var-name">${item.name}</span>
+          </div>
+          ${item.status}
+        `;
+        executionPhaseOutput.appendChild(rowElem);
+        await delay(600);
+        rowElem.classList.remove("active-step");
+      }
     }
   }
   if (executionBox) executionBox.classList.remove("active-phase");
